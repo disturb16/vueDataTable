@@ -24,11 +24,46 @@ Vue.component('data-table', dataTable)
 
 ## Basic usage:
 ```
+const jsonArray = [
+        {
+          name: 'Scarleth J.',
+          Age: 24,
+          userName: 'scar',
+          email:'scar@doe.com'
+        },
+        {
+
+          name: 'Creg Tyrn',
+          Age: 26,
+          userName: 'cregT',
+          email:'tyrn@doe.com'
+        },
+        {
+          name: 'Viviam St.',
+          Age: 21,
+          userName: 'vivst',
+          email:'viv@doe.com'
+        },
+        {
+          name: 'John R.',
+          Age: 25,
+          userName: 'johnr',
+          email:'jphn@doe.com'
+        }
+      ]
+```
+Add it to component:
+
+```
 <data-table
   :dataSource="jsonArray" />
   ```
 
-  ###  Options
+Output:
+
+![](preview.png?raw=true)
+
+###  Options
 
 #### Hiding Columns
 
