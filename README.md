@@ -1,4 +1,4 @@
-# vueDataTable
+# VueDataTable
 Vue + Materialize datatable component
 
 # Pre-requisits & Installation
