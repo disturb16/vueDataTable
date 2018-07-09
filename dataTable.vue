@@ -39,14 +39,22 @@ export default {
       activeFilter: ''
     }
   },
+  mounted(){
+    this.refreshDropDowns()
+  },
   updated(){
-    const ddTriggerEls = document.querySelectorAll('.dropdown-trigger');
-    const insTriggers = M.Dropdown.init(ddTriggerEls, {constrainWidth: false})
-
-    this.$emit('afterDataLoad')
+    this.refreshDropDowns()
   },
 
   methods:{
+
+    refreshDropDowns(){
+      const ddTriggerEls = document.querySelectorAll('.dropdown-trigger');
+      const insTriggers = M.Dropdown.init(ddTriggerEls, {constrainWidth: false})
+
+      this.$emit('afterDataLoad')
+    },
+
     validValue(val){
       if (val == null || typeof val == 'undefined' || val == "")
         return false
