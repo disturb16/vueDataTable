@@ -2,10 +2,18 @@
   <div>
     <div class="row">
       <ul v-for="dd in ddList" :key="dd.id" :id='dd.id' class='dropdown-content'>
-        <li @click="selectFilter('')"><a>Todo</a></li>
+        <li @click="selectFilter('')"><a href="#!">All</a></li>
+
         <li v-for="item in getDDList(dd.colName)" :key="item" @click="selectFilter(dd.colName, item)" v-if="item">
-          <a>{{getValueFormat(dd.colName, item)}}</a></li>
+          <a href="#">{{getValueFormat(dd.colName, item)}}</a>
+        </li>
       </ul>
+    </div>
+    
+    <div v-if="dataSource.length > 0">
+      <a href="#!" 
+        class="btn-flat btn-small waves-effect waves-light green white-text"
+        @click="exportDataToCSV">Export<i class="material-icons right">file_download</i></a>
     </div>
 
     <table>
@@ -18,8 +26,16 @@
       </thead>
       <tbody>
         <tr v-for="row in dataFiltered" :key="randId()+row[visibleColumns[0]]" :class="getRowStyle(row)">
-          <td v-for="extraCol in extraColumns" :key="extraCol+randId()"  v-html="getExtraValueFormat(extraCol, row)" />
+
+          <!-- values for extra columns -->
+          <td v-for="extraCol in extraColumns" :key="extraCol+randId()">
+            <span v-html="getExtraValueFormat(extraCol, row)"/>
+            <slot :name="extraCol" v-bind:row="row"></slot>
+          </td>
+
+          <!-- values from datasource -->
           <td v-for="col in visibleColumns" :key="col"> {{ getValueFormat(col, row[col]) }} </td>
+          
         </tr>
       </tbody>
     </table>
@@ -28,15 +44,18 @@
 </template>
 
 <script>
+import Papa from 'papaparse'
 
 export default {
   name: 'datatable',
   props: ['dataSource', 'excludedColumns', 
           'rowStyleConditions','formattingRules',
-          'extraColumns', 'extraColumnsFormattingRules'],
+          'extraColumns', 'extraColumnsValues'],
   data(){
     return{
-      activeFilter: ''
+      activeFilter: '',
+      insTriggers: null,
+      ddTriggerEls: null
     }
   },
   mounted(){
@@ -49,10 +68,11 @@ export default {
   methods:{
 
     refreshDropDowns(){
-      const ddTriggerEls = document.querySelectorAll('.dropdown-trigger');
-      const insTriggers = M.Dropdown.init(ddTriggerEls, {constrainWidth: false})
-
-      this.$emit('afterDataLoad')
+      var elems = document.querySelectorAll('.dropdown-trigger');
+      var instances = M.Dropdown.init(elems, {
+        coverTrigger: false,
+        constrainWidth: false
+      });
     },
 
     validValue(val){
@@ -69,8 +89,9 @@ export default {
           arr.push(item[property])
       })
 
-      return arr
+      return arr.sort()
     },
+
     selectFilter(param, value){
       if (!param || !value)
         this.activeFilter = ''
@@ -81,6 +102,7 @@ export default {
       }
       this.activeFilter = filter
     },
+
     randId(){
       const max = 100000
       return Math.floor(Math.random() * Math.floor(max))
@@ -100,11 +122,41 @@ export default {
       
       return this.formattingRules(colName, value)
     },
+
     getExtraValueFormat(col, row){
-      if(!this.validValue(this.extraColumnsFormattingRules))
-        return value
+      if(!this.validValue(this.extraColumnsValues))
+        return ''
       
-      return this.extraColumnsFormattingRules(col, row)
+      return this.extraColumnsValues(col, row)
+    },
+
+    exportDataToCSV(){
+
+      const dataToExport = []
+
+      this.dataFiltered.forEach(row=>{
+        const  ob = {}
+        this.visibleColumns.forEach(col=>{
+          const colName = col.charAt(0).toUpperCase() +col.slice(1)
+          ob[colName] = this.getValueFormat(col, row[col])
+        })
+        dataToExport.push(ob)
+      })
+
+
+      const csv = Papa.unparse(dataToExport)
+
+      const file = new Blob([csv], {type: 'csv'})
+      const a = document.createElement("a")
+      const url = URL.createObjectURL(file)
+      a.href = url
+      a.download = `exported-data${this.randId()}.csv`
+      document.body.appendChild(a)
+      a.click()
+      setTimeout(function() {
+          document.body.removeChild(a)
+          window.URL.revokeObjectURL(url)
+      }, 0)
     }
   },
   computed:{
@@ -121,10 +173,11 @@ export default {
     ddList(){
       let listOfDD = []
       this.visibleColumns.forEach(col=>{
-        listOfDD.push({id: 'dd_'+col, colName: col})
+        listOfDD.push({id: 'dd_'+col+this.randId(), colName: col})
       })
       return listOfDD
     },
+
     dataFiltered(){
       if(this.activeFilter == '')
         return this.dataSource
