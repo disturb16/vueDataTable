@@ -76,7 +76,7 @@ Output:
   ```
 #### Cell Value format
 
-you can use the formattingRules attribute to stylize your data, it accepts to values: `columnName` and `value``
+you can use the formattingRules attribute to stylize your data, it accepts two params: `columnName` and `value`,
 with these you can validate which column you want to format.
 
 for example:
