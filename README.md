@@ -3,6 +3,7 @@ Vue + Materialize datatable component
 
 # Pre-requisits & Installation
 Vuejs 2.0 and Materialize.js are needed. Then paste the dataTable.vue file in your project and import it
+To export data to CSV papaparse is needed. `npm install papaparse`
 
 Add component:
 
@@ -76,7 +77,7 @@ Output:
   ```
 #### Cell Value format
 
-you can use the formattingRules attribute to stylize your data, it accepts two params: `columnName` and `value`,
+you can use the `cellValueFormat` attribute to stylize your data, it accepts two params: `columnName` and `value`,
 with these you can validate which column you want to format.
 
 for example:
@@ -86,7 +87,7 @@ new Vue({
   ...
 
   methods:{
-    formattingRules(colName, value){
+    cellValueFormat(colName, value){
       let formatted = ''
       switch(colName){
         case 'date':
@@ -117,7 +118,7 @@ then pass it to dataTable:
 <data-table
   :dataSource="jsonArray"
   :excludedColumns ="excludedColumns"
-  :formattingRules="formattingRules" />
+  :cellValueFormat="cellValueFormat" />
   ```
 
   #### Extra Columns
@@ -128,10 +129,10 @@ then pass it to dataTable:
 
   then you can pass values
 
-  `extraColumnsFormattingRules` is a method that receives current row and current column name
+  `extraColumnsValues` is a method that receives current row and current column name
 
 ```
-  extraColumnsFormattingRules(colName, row){
+  extraColumnsValues(colName, row){
       switch(colName){
         case 'Actions':
           const id = row.userId
@@ -146,7 +147,7 @@ then pass it to dataTable:
   <data-table
   :dataSource="jsonArray"
   :extraColumns="extraColumns"
-  :extraColumnsFormattingRules="extraColumnsFormattingRules" />
+  :extraColumnsValues="extraColumnsValues" />
   ```
 
   #### Row Style
@@ -171,3 +172,23 @@ then pass it to dataTable:
     :dataSource="jsonArray"
     :rowStyleConditions="rowStyleConditions" />
   ```
+#### What if  you want to pass rendered components?
+
+You can use the Vuejs slot system, and it only works for extraColumns, here is an example:
+```
+const data = [...]
+const extraColumns = ['Validate_User']
+
+<data-table
+  :dataSource="data"
+  :extraColumns="extraColumns">
+
+  <template slot-scope="dataRow" slot="Validate_User">
+    <primary-button @clicked="AuthUser(dataRow.row.userId">Validate</primary-button>
+  </template>
+
+</data-table>
+```
+
+Note that the named slot has the same name of your extra-column and to access data of the current row you can use the
+`slot-scope` attribute, this has the row data, then you can access `dataRow.row.your-value`
