@@ -1,10 +1,17 @@
 <template>
   <div>
     <div class="row">
-      <ul v-for="dd in ddList" :key="dd.id" :id='dd.id' class='dropdown-content'>
-        <li @click="selectFilter('')"><a href="#!">All</a></li>
+      <ul v-for="(dd, ddindex) in ddList"
+        :key="dd.id"
+        :id='dd.id'
+        :tabindex="ddindex"
+        class='dropdown-content'>
+        <li @click="selectFilter('')" tabindex="0"><a href="#!">Todo</a></li>
 
-        <li v-for="item in getDDList(dd.colName)" :key="item" @click="selectFilter(dd.colName, item)" v-if="item">
+        <li v-for="(item, index) in getDDList(dd.colName)" 
+          :tabindex="index+1"
+          :key="item" 
+          @click="selectFilter(dd.colName, item)">
           <a href="#">{{getValueFormat(dd.colName, item)}}</a>
         </li>
       </ul>
@@ -21,7 +28,7 @@
         <tr>
           <th v-for="extra in extraColumns" :key="extra+randId()">{{extra}}</th>
           <th v-for="dd in ddList"
-          :key="dd.id"> <a href="#" class="dropdown-trigger" :data-target="dd.id">{{dd.colName | colName | capitalize}} <i class="material-icons">expand_more</i></a></th>
+          :key="dd.id"> <a href="" class="column-filter" :data-target="dd.id">{{dd.colName | colName | capitalize}} <i class="material-icons">expand_more</i></a></th>
         </tr>
       </thead>
       <tbody>
@@ -49,13 +56,11 @@ import Papa from 'papaparse'
 export default {
   name: 'datatable',
   props: ['dataSource', 'excludedColumns', 
-          'rowStyleConditions','formattingRules',
+          'rowStyleConditions','cellValueFormat',
           'extraColumns', 'extraColumnsValues'],
   data(){
     return{
-      activeFilter: '',
-      insTriggers: null,
-      ddTriggerEls: null
+      activeFilter: ''
     }
   },
   mounted(){
@@ -68,11 +73,12 @@ export default {
   methods:{
 
     refreshDropDowns(){
-      var elems = document.querySelectorAll('.dropdown-trigger');
-      var instances = M.Dropdown.init(elems, {
+      const elems = document.querySelectorAll('.column-filter')
+      const instances = M.Dropdown.init(elems, {
         coverTrigger: false,
         constrainWidth: false
-      });
+      })
+      
     },
 
     validValue(val){
@@ -117,10 +123,10 @@ export default {
     },
 
     getValueFormat(colName, value){
-      if(!this.validValue(this.formattingRules))
+      if(!this.validValue(this.cellValueFormat))
         return value
       
-      return this.formattingRules(colName, value)
+      return this.cellValueFormat(colName, value)
     },
 
     getExtraValueFormat(col, row){
