@@ -87,6 +87,9 @@ export default {
       return true
     },
 
+  /**
+  * @param {String} property Column name
+  */
     getDDList(property){
       let arr = []
       this.dataSource.forEach(item=>{
@@ -97,6 +100,11 @@ export default {
 
       return arr.sort()
     },
+
+    /**
+    * @param {String} param Column name to be filtered
+    * @param {String} value value to be filtered
+    */
 
     selectFilter(param, value){
       if (!param || !value)
@@ -115,7 +123,6 @@ export default {
     },
 
     getRowStyle(row){
-
       if(!this.validValue(this.rowStyleConditions))
         return ''
       
@@ -176,6 +183,9 @@ export default {
         return []
     },
 
+    /**
+     * @returns {Array}
+     */
     ddList(){
       let listOfDD = []
       this.visibleColumns.forEach(col=>{
@@ -184,6 +194,9 @@ export default {
       return listOfDD
     },
 
+    /**
+     * @returns {Array}
+     */
     dataFiltered(){
       if(this.activeFilter == '')
         return this.dataSource
@@ -204,8 +217,15 @@ export default {
 
   filters:{
     colName(value){
-      if(typeof value == "string")
-        return value.replace(/_/g, " ")
+      
+      if(typeof value == "string"){
+        const arr = value.split("_")
+        let header = ""
+        arr.forEach(word =>{
+          header += word.charAt(0).toUpperCase() + word.slice(1) + " "
+        })
+        return header.trim()
+      }
       else
         return value
     }
