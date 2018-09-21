@@ -60,11 +60,17 @@ export default {
           'extraColumns', 'extraColumnsValues'],
   data(){
     return{
-      activeFilter: ''
+      activeFilter: '',
+      firstUpdated: false
     }
   },
   mounted(){
     this.refreshDropDowns()
+  },
+  
+  updated() {
+    if(!this.firstUpdated)
+      this.refreshDropDowns()
   },
 
   methods:{
@@ -231,9 +237,16 @@ export default {
       }
       else
         return value
-    }
-  }
+    },
 
-  
+    capitalize(value){
+    if(typeof value == "string")
+      return value.charAt(0).toUpperCase() +value.slice(1)
+    else
+      return value
+    }
+
+  } 
+
 }
 </script>
