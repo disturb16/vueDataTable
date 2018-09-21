@@ -66,9 +66,6 @@ export default {
   mounted(){
     this.refreshDropDowns()
   },
-  updated(){
-    this.refreshDropDowns()
-  },
 
   methods:{
 
@@ -212,6 +209,12 @@ export default {
         return this.columns
 
       return this.columns.filter(col=> !this.excludedColumns.includes(col))
+    }
+  },
+
+  watch:{
+    dataSource: function(source){
+      this.refreshDropDowns()
     }
   },
 
