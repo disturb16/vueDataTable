@@ -167,7 +167,7 @@ then pass it to dataTable:
   ```
   Then you can use it as:
 
-  ```
+  ```js
     <data-table
     :dataSource="jsonArray"
     :rowStyleConditions="rowStyleConditions" />
@@ -175,7 +175,7 @@ then pass it to dataTable:
 #### What if  you want to pass rendered components?
 
 You can use the Vuejs slot system, and it only works for extraColumns, here is an example:
-```
+```js
 const data = [...]
 const extraColumns = ['Validate_User']
 
@@ -191,4 +191,5 @@ const extraColumns = ['Validate_User']
 ```
 
 Note that the named slot has the same name of your extra-column and to access data of the current row you can use the
-`slot-scope` attribute, this has the row data, then you can access `dataRow.row.your-value`
+`slot-scope` attribute, this has the row data, then you can access `dataRow.row.your-value`.
+
