@@ -7,7 +7,7 @@ To export data to CSV papaparse is needed. `npm install papaparse`
 
 Add component:
 
-```
+```js
 import dataTable from './path-to-datatable.vue'
 
 new Vue({
@@ -24,7 +24,7 @@ Vue.component('data-table', dataTable)
 ```
 
 ## Basic usage:
-```
+```js
 const jsonArray = [
         {
           name: 'Scarleth J.',
@@ -55,7 +55,7 @@ const jsonArray = [
 ```
 Add it to component:
 
-```
+```js
 <data-table
   :dataSource="jsonArray" />
   ```
@@ -70,7 +70,7 @@ Output:
 
 `const excludedColumns = ['id', 'department', 'date']`
 
-```
+```js
 <data-table
   :dataSource="jsonArray"
   :excludedColumns ="excludedColumns" />
@@ -81,7 +81,7 @@ you can use the `cellValueFormat` attribute to stylize your data, it accepts two
 with these you can validate which column you want to format.
 
 for example:
-```
+```js
 new Vue({
 
   ...
@@ -114,7 +114,7 @@ new Vue({
 
 then pass it to dataTable:
 
-```
+```js
 <data-table
   :dataSource="jsonArray"
   :excludedColumns ="excludedColumns"
@@ -131,7 +131,7 @@ then pass it to dataTable:
 
   `extraColumnsValues` is a method that receives current row and current column name
 
-```
+```js
   extraColumnsValues(colName, row){
       switch(colName){
         case 'Actions':
@@ -143,7 +143,7 @@ then pass it to dataTable:
     }
   ```
 
-  ```
+  ```js
   <data-table
   :dataSource="jsonArray"
   :extraColumns="extraColumns"
@@ -155,7 +155,7 @@ then pass it to dataTable:
 
   `rowStyleConditions` is a method which receives current row
 
-  ```
+  ```js
     rowStyleConditions(row){
      const mins = row.late_mins
       return {
@@ -184,7 +184,7 @@ const extraColumns = ['Validate_User']
   :extraColumns="extraColumns">
 
   <template slot-scope="dataRow" slot="Validate_User">
-    <primary-button @clicked="AuthUser(dataRow.row.userId">Validate</primary-button>
+    <primary-button @clicked="AuthUser(dataRow.row.userId)">Validate</primary-button>
   </template>
 
 </data-table>
